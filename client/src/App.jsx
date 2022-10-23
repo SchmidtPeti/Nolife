@@ -4,13 +4,29 @@ import {Chat} from 'stream-chat-react'
 import Cookies from 'universal-cookie'
 import {ChannelContainer,ChannelListContainer, Auth} from './components/index'
 
+
 import './App.css'
 
-require('dotenv').config()
+const cookies = new Cookies();
+
 //using rafce to make simple componenet with es7 plugin
 const apiKey = process.env.REACT_APP_API_KEY;
+
+const authToken = cookies.get("token");
+
 const client = StreamChat.getInstance(apiKey)
-const authToken = false;
+
+if(authToken) {
+  client.connectUser({
+    name: cookies.get('username'),
+    fullName: cookies.get('fullName'),
+    id : cookies.get('userId'),
+    phoneNumber: cookies.get('phoneNumber'),
+    image: cookies.get('avatarURL'),
+    hashedPassword : cookies.get('hashedPassword')
+  },authToken)
+}
+
 
 const App = () => {
   if(!authToken) return <Auth />
